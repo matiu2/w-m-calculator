@@ -1,0 +1,172 @@
+/* App-wide styling */
+body {
+  background-color: #0f1116;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hero {
+  background-color: #1a1d24;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-width: 500px;
+  width: 100%;
+}
+
+#hero label {
+  display: block;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #a8b2c8;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#hero label:first-of-type {
+  margin-top: 0;
+}
+
+#hero input {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #0f1116;
+  border: 2px solid #2a2e38;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+#hero input:focus {
+  outline: none;
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+}
+
+#hero input:hover {
+  border-color: #3a4150;
+}
+
+#hero dl {
+  margin-top: 30px;
+  padding: 24px;
+  background-color: #0f1116;
+  border-radius: 8px;
+  border: 2px solid #2a2e38;
+}
+
+#hero dt {
+  font-weight: 600;
+  color: #4a9eff;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 16px;
+}
+
+#hero dt:first-of-type {
+  margin-top: 0;
+}
+
+#hero dd {
+  margin: 8px 0 0 0;
+  padding: 12px;
+  background-color: #1a1d24;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  color: #ffffff;
+}
+
+#hero dd.output-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+#hero dd.output-value span {
+  flex: 1;
+}
+
+#hero .copy-btn {
+  background-color: #2a2e38;
+  border: 2px solid #3a4150;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px 12px;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+#hero .copy-btn:hover {
+  background-color: #3a4150;
+  border-color: #4a9eff;
+}
+
+#hero .copy-btn:active {
+  transform: scale(0.95);
+}
+
+#hero p {
+  margin-top: 30px;
+  text-align: center;
+  color: #a8b2c8;
+  font-style: italic;
+}
+
+#hero .pattern-title {
+  margin: 20px 0 20px 0;
+  padding: 16px;
+  background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+}
+
+#links {
+  width: 400px;
+  text-align: left;
+  font-size: x-large;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+#links a {
+  color: white;
+  text-decoration: none;
+  margin-top: 20px;
+  margin: 10px 0px;
+  border: white 1px solid;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+#links a:hover {
+  background-color: #1f1f1f;
+  cursor: pointer;
+}
+
+#header {
+  max-width: 1200px;
+}
