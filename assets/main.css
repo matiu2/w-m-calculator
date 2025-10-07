@@ -143,6 +143,36 @@ body {
   box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
 }
 
+#hero .alert-box {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  border: 3px solid #ff6666;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(255, 68, 68, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(255, 68, 68, 0.5);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(255, 68, 68, 0.8);
+  }
+}
+
+#hero dd.info-value {
+  background-color: #1a1d24;
+  border-left: 3px solid #4a9eff;
+  color: #a8b2c8;
+  font-size: 18px;
+}
+
 #links {
   width: 400px;
   text-align: left;

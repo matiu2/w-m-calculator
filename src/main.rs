@@ -121,10 +121,19 @@ pub fn Hero() -> Element {
                     } else {
                         entry - (sl - entry)
                     };
+
+                    // Calculate distances in pips
+                    let distance_to_sl_pips = (entry - sl).abs() / pip_size;
+                    let distance_to_tp_pips = (tp - entry).abs() / pip_size;
+                    let spread_ratio = distance_to_sl_pips / *spread.read();
+
                     let decimal_places = *pip_places.read() + 1;
                     let entry_str = format!("{entry:.decimal_places$}");
                     let sl_str = format!("{sl:.decimal_places$}");
                     let tp_str = format!("{tp:.decimal_places$}");
+                    let distance_to_sl_str = format!("{distance_to_sl_pips:.1}");
+                    let distance_to_tp_str = format!("{distance_to_tp_pips:.1}");
+                    let spread_ratio_str = format!("{spread_ratio:.1}");
                     let pattern_title = if is_w {
                         "This is a W pattern, longing"
                     } else {
@@ -134,6 +143,12 @@ pub fn Hero() -> Element {
                         h3 {
                             class: "pattern-title",
                             "{pattern_title}"
+                        }
+                        if spread_ratio < 10.0 {
+                            div {
+                                class: "alert-box",
+                                "⚠️ WARNING: Spread ratio is {spread_ratio_str}x - this is less than 10x the broker spread!"
+                            }
                         }
                         dl {
                             dt { "Entry:" }
@@ -171,6 +186,21 @@ pub fn Hero() -> Element {
                                     },
                                     "📋"
                                 }
+                            }
+                            dt { "Distance to SL (pips):" }
+                            dd {
+                                class: "output-value info-value",
+                                span { "{distance_to_sl_str}" }
+                            }
+                            dt { "Distance to TP (pips):" }
+                            dd {
+                                class: "output-value info-value",
+                                span { "{distance_to_tp_str}" }
+                            }
+                            dt { "Spread Ratio (distance/spread):" }
+                            dd {
+                                class: "output-value info-value",
+                                span { "{spread_ratio_str}x" }
                             }
                         }
                     }
