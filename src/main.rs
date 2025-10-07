@@ -23,10 +23,10 @@ fn App() -> Element {
 pub fn Hero() -> Element {
     let mut pip_places = use_persistent("pip_places", || 4);
     let mut spread = use_persistent("spread", || 1.5);
-    let high_low = use_persistent("high_low", || -> Option<f32> { None });
-    let neckline = use_persistent("neckline", || -> Option<f32> { None });
+    let high_low = use_persistent("high_low", || -> Option<f64> { None });
+    let neckline = use_persistent("neckline", || -> Option<f64> { None });
 
-    let get_input = |mut signal: Signal<Option<f32>>| {
+    let get_input = |mut signal: Signal<Option<f64>>| {
         move |e: Event<FormData>| {
             let raw = e.value();
             let input = raw.trim();
@@ -62,6 +62,9 @@ pub fn Hero() -> Element {
             input {
                 id: "pip_places",
                 type: "number",
+                step: "1",
+                min: "0",
+                max: "10",
                 value: pip_places,
                 onchange: move |e: Event<FormData>| {
                     let raw = e.value();
@@ -99,7 +102,7 @@ pub fn Hero() -> Element {
             }
             {
                 if let (Some(high_low_val), Some(neckline_val)) = (*high_low.read(), *neckline.read()) {
-                    let pip_size = 10.0_f32.powi(-(*pip_places.read() as i32));
+                    let pip_size = 10.0_f64.powi(-(*pip_places.read() as i32));
                     let is_w = neckline_val > high_low_val;
                     let stop_loss = high_low_val;
                     let (entry, sl) = if is_w {
