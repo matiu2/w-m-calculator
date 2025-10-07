@@ -1,9 +1,9 @@
 [application]
+name = "w-m-calculator"
 
 [web.app]
-
-# HTML title tag content
-title = "w-m-calculator"
+title = "W/M Pattern Calculator"
+base_path = "/w-m-calculator"
 
 # include `assets` in web platform
 [web.resource]
