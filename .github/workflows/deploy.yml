@@ -22,10 +22,9 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Install Dioxus CLI
-        run: |
-          wget -qO- https://github.com/DioxusLabs/dioxus/releases/latest/download/dx-x86_64-unknown-linux-musl.tar.gz | tar -xz
-          sudo mv dx /usr/local/bin/
-          dx --version
+        uses: taiki-e/install-action@v2
+        with:
+          tool: dioxus-cli@0.6
 
       - name: Build project
         run: dx build --release
