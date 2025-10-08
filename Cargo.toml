@@ -9,6 +9,7 @@ edition = "2021"
 [dependencies]
 dioxus = { version = "0.6.0", features = [] }
 dioxus-sdk = { version = "0.6.0", features = ["storage"] }
+gloo-timers = { version = "0.3.0", features = ["futures"] }
 
 [features]
 default = ["web"]

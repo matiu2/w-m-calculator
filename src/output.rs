@@ -30,6 +30,8 @@ pub fn OutputWithValues(
     pip_places: Signal<usize>,
     spread: Signal<f64>,
 ) -> Element {
+    let mut copy_alert = use_signal(|| Option::<String>::None);
+
     let neckline_val = *neckline.read();
     let high_low_val = *high_low.read();
     let pip_size = 10.0_f64.powi(-(*pip_places.read() as i32));
@@ -78,7 +80,40 @@ pub fn OutputWithValues(
         "This is an M pattern, shorting"
     };
 
+    // Helper to copy and show alert
+    let mut copy_value = move |value: &str, label: &str| {
+        eval(&format!(r#"navigator.clipboard.writeText("{value}")"#));
+        let msg = format!("{label} copied!");
+        copy_alert.set(Some(msg));
+    };
+
+    // Clear alert after 2 seconds
+    use_effect(move || {
+        if copy_alert.read().is_some() {
+            spawn(async move {
+                gloo_timers::future::TimeoutFuture::new(2000).await;
+                copy_alert.set(None);
+            });
+        }
+    });
+
+    // Clone strings for keyboard handler
+    let entry_str_kb = entry_str.clone();
+    let sl_str_kb = sl_str.clone();
+    let tp_str_kb = tp_str.clone();
+
     rsx! {
+        // Keyboard event listener
+        div {
+            onkeydown: move |evt| {
+                match evt.code() {
+                    Code::KeyE => copy_value(&entry_str_kb, "Entry price"),
+                    Code::KeyS => copy_value(&sl_str_kb, "Stop loss"),
+                    Code::KeyT => copy_value(&tp_str_kb, "Take profit"),
+                    _ => {}
+                }
+            },
+            tabindex: 0,
         h3 {
             class: "pattern-title",
             "{pattern_title}"
@@ -89,8 +124,14 @@ pub fn OutputWithValues(
                 "⚠️ WARNING: Spread ratio is {spread_ratio_str}x - this is less than 10x the broker spread!"
             }
         }
+        if let Some(alert_msg) = copy_alert.read().as_ref() {
+            div {
+                class: "copy-alert",
+                "{alert_msg}"
+            }
+        }
         dl {
-            dt { "Entry:" }
+            dt { "Entry (e):" }
             dd {
                 class: "output-value",
                 span { "{entry_str}" }
@@ -102,7 +143,7 @@ pub fn OutputWithValues(
                     "📋"
                 }
             }
-            dt { "Stop loss:" }
+            dt { "Stop loss (s):" }
             dd {
                 class: "output-value",
                 span { "{sl_str}" }
@@ -114,7 +155,7 @@ pub fn OutputWithValues(
                     "📋"
                 }
             }
-            dt { "Take Profit:" }
+            dt { "Take Profit (t):" }
             dd {
                 class: "output-value",
                 span { "{tp_str}" }
@@ -141,6 +182,7 @@ pub fn OutputWithValues(
                 class: "output-value info-value",
                 span { "{spread_ratio_str}x" }
             }
+        }
         }
     }
 }
