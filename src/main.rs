@@ -1,6 +1,9 @@
-use dioxus::document::eval;
 use dioxus::prelude::*;
 use dioxus_sdk::storage::use_persistent;
+
+use crate::output::Output;
+
+pub mod output;
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -100,113 +103,11 @@ pub fn Hero() -> Element {
                 },
                 onchange: get_input(neckline)
             }
-            {
-                if let (Some(high_low_val), Some(neckline_val)) = (*high_low.read(), *neckline.read()) {
-                    let pip_size = 10.0_f64.powi(-(*pip_places.read() as i32));
-                    let is_w = neckline_val > high_low_val;
-                    let stop_loss = high_low_val;
-                    let (entry, sl) = if is_w {
-                        (
-                            neckline_val + (0.5 + *spread.read()) * pip_size,
-                            stop_loss - 1.0 * pip_size,
-                        )
-                    } else {
-                        (
-                            neckline_val - 0.5 * pip_size,
-                            stop_loss + (1.0 + *spread.read()) * pip_size,
-                        )
-                    };
-                    let tp = if is_w {
-                        entry + (entry - sl)
-                    } else {
-                        entry - (sl - entry)
-                    };
-
-                    // Calculate distances in pips
-                    let distance_to_sl_pips = (entry - sl).abs() / pip_size;
-                    let distance_to_tp_pips = (tp - entry).abs() / pip_size;
-                    let spread_ratio = distance_to_sl_pips / *spread.read();
-
-                    let decimal_places = *pip_places.read() + 1;
-                    let entry_str = format!("{entry:.decimal_places$}");
-                    let sl_str = format!("{sl:.decimal_places$}");
-                    let tp_str = format!("{tp:.decimal_places$}");
-                    let distance_to_sl_str = format!("{distance_to_sl_pips:.1}");
-                    let distance_to_tp_str = format!("{distance_to_tp_pips:.1}");
-                    let spread_ratio_str = format!("{spread_ratio:.1}");
-                    let pattern_title = if is_w {
-                        "This is a W pattern, longing"
-                    } else {
-                        "This is an M pattern, shorting"
-                    };
-                    rsx! {
-                        h3 {
-                            class: "pattern-title",
-                            "{pattern_title}"
-                        }
-                        if spread_ratio < 10.0 {
-                            div {
-                                class: "alert-box",
-                                "⚠️ WARNING: Spread ratio is {spread_ratio_str}x - this is less than 10x the broker spread!"
-                            }
-                        }
-                        dl {
-                            dt { "Entry:" }
-                            dd {
-                                class: "output-value",
-                                span { "{entry_str}" }
-                                button {
-                                    class: "copy-btn",
-                                    onclick: move |_| {
-                                        eval(&format!(r#"navigator.clipboard.writeText("{entry_str}")"#));
-                                    },
-                                    "📋"
-                                }
-                            }
-                            dt { "Stop loss:" }
-                            dd {
-                                class: "output-value",
-                                span { "{sl_str}" }
-                                button {
-                                    class: "copy-btn",
-                                    onclick: move |_| {
-                                        eval(&format!(r#"navigator.clipboard.writeText("{sl_str}")"#));
-                                    },
-                                    "📋"
-                                }
-                            }
-                            dt { "Take Profit:" }
-                            dd {
-                                class: "output-value",
-                                span { "{tp_str}" }
-                                button {
-                                    class: "copy-btn",
-                                    onclick: move |_| {
-                                        eval(&format!(r#"navigator.clipboard.writeText("{tp_str}")"#));
-                                    },
-                                    "📋"
-                                }
-                            }
-                            dt { "Distance to SL (pips):" }
-                            dd {
-                                class: "output-value info-value",
-                                span { "{distance_to_sl_str}" }
-                            }
-                            dt { "Distance to TP (pips):" }
-                            dd {
-                                class: "output-value info-value",
-                                span { "{distance_to_tp_str}" }
-                            }
-                            dt { "Spread Ratio (distance/spread):" }
-                            dd {
-                                class: "output-value info-value",
-                                span { "{spread_ratio_str}x" }
-                            }
-                        }
-                    }
-                } else {
-                    rsx! {p{"Need both values to calc"}}
-                }
+            Output {
+                high_low: high_low,
+                neckline: neckline,
+                pip_places: pip_places,
+                spread: spread,
             }
         }
     }
