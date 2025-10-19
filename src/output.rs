@@ -17,7 +17,12 @@ pub fn Output(
             }
         }
     } else {
-        rsx! {p{"Need all values to calc"}}
+        rsx! {
+            div {
+                class: "empty-state",
+                "Need all values to calc"
+            }
+        }
     }
 }
 
@@ -118,6 +123,7 @@ pub fn OutputWithValues(
     rsx! {
         // Keyboard event listener
         div {
+            class: "result-panel",
             onkeydown: move |evt| {
                 match evt.code() {
                     Code::KeyE => copy_value(&entry_str_kb, "Entry price"),
@@ -127,75 +133,75 @@ pub fn OutputWithValues(
                 }
             },
             tabindex: 0,
-        h3 {
-            class: "pattern-title",
-            "{pattern_title}"
-        }
-        if spread_ratio < 10.0 {
-            div {
-                class: "alert-box",
-                "⚠️ WARNING: Spread ratio is {spread_ratio_str}x - this is less than 10x the broker spread!"
+            h3 {
+                class: "pattern-title",
+                "{pattern_title}"
             }
-        }
-        if let Some(alert_msg) = copy_alert.read().as_ref() {
-            div {
-                class: "copy-alert",
-                "{alert_msg}"
-            }
-        }
-        dl {
-            dt { "Entry (e):" }
-            dd {
-                class: "output-value",
-                span { "{entry_str}" }
-                button {
-                    class: "copy-btn",
-                    onclick: move |_| {
-                        eval(&format!(r#"navigator.clipboard.writeText("{entry_str}")"#));
-                    },
-                    "📋"
+            if spread_ratio < 10.0 {
+                div {
+                    class: "alert-box",
+                    "⚠️ WARNING: Spread ratio is {spread_ratio_str}x - this is less than 10x the broker spread!"
                 }
             }
-            dt { "Stop loss (s):" }
-            dd {
-                class: "output-value",
-                span { "{sl_str}" }
-                button {
-                    class: "copy-btn",
-                    onclick: move |_| {
-                        eval(&format!(r#"navigator.clipboard.writeText("{sl_str}")"#));
-                    },
-                    "📋"
+            if let Some(alert_msg) = copy_alert.read().as_ref() {
+                div {
+                    class: "copy-alert",
+                    "{alert_msg}"
                 }
             }
-            dt { "Take Profit (t):" }
-            dd {
-                class: "output-value",
-                span { "{tp_str}" }
-                button {
-                    class: "copy-btn",
-                    onclick: move |_| {
-                        eval(&format!(r#"navigator.clipboard.writeText("{tp_str}")"#));
-                    },
-                    "📋"
+            dl {
+                dt { "Entry (e):" }
+                dd {
+                    class: "output-value",
+                    span { "{entry_str}" }
+                    button {
+                        class: "copy-btn",
+                        onclick: move |_| {
+                            eval(&format!(r#"navigator.clipboard.writeText("{entry_str}")"#));
+                        },
+                        "📋"
+                    }
+                }
+                dt { "Stop loss (s):" }
+                dd {
+                    class: "output-value",
+                    span { "{sl_str}" }
+                    button {
+                        class: "copy-btn",
+                        onclick: move |_| {
+                            eval(&format!(r#"navigator.clipboard.writeText("{sl_str}")"#));
+                        },
+                        "📋"
+                    }
+                }
+                dt { "Take Profit (t):" }
+                dd {
+                    class: "output-value",
+                    span { "{tp_str}" }
+                    button {
+                        class: "copy-btn",
+                        onclick: move |_| {
+                            eval(&format!(r#"navigator.clipboard.writeText("{tp_str}")"#));
+                        },
+                        "📋"
+                    }
+                }
+                dt { "Distance to SL (pips):" }
+                dd {
+                    class: "output-value info-value",
+                    span { "{distance_to_sl_str}" }
+                }
+                dt { "Distance to TP (pips):" }
+                dd {
+                    class: "output-value info-value",
+                    span { "{distance_to_tp_str}" }
+                }
+                dt { "Spread Ratio (distance/spread):" }
+                dd {
+                    class: "output-value info-value",
+                    span { "{spread_ratio_str}x" }
                 }
             }
-            dt { "Distance to SL (pips):" }
-            dd {
-                class: "output-value info-value",
-                span { "{distance_to_sl_str}" }
-            }
-            dt { "Distance to TP (pips):" }
-            dd {
-                class: "output-value info-value",
-                span { "{distance_to_tp_str}" }
-            }
-            dt { "Spread Ratio (distance/spread):" }
-            dd {
-                class: "output-value info-value",
-                span { "{spread_ratio_str}x" }
-            }
-        }
         }
     }
 }
