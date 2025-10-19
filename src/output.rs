@@ -37,28 +37,42 @@ pub fn OutputWithValues(
     let stop_loss = high_low_val;
     let spread_pips = *spread.read() * pip_size;
     let half_pip = 0.5 * pip_size;
-    let sl_buffer = pip_size;
+    let one_pip = pip_size;
 
-    let (entry, sl) = if is_w {
-        // For W patterns (long position)
-        // Our inputs are bid prices, and we will be buying at the
-        // ask price, so we need to add the broker spread
-        (neckline_val + spread_pips + half_pip, stop_loss - sl_buffer)
+    // Price level adjustments (bid inputs, ask executions):
+    //  | Level       | W Bottom (Long)           | M Top (Short)              |
+    //  |-------------|---------------------------|----------------------------|
+    //  | Entry       | Neckline + 0.5 pip        | Neckline - 0.5 pip         |
+    //  | Stop Loss   | Wick low - (spread + 1.0) | Wick high + (spread + 1.0) |
+    //  | Take Profit | Neckline + 1R - buffer    | Neckline - 1R + buffer     |
+    let entry = if is_w {
+        // Long entries buy through the ask; display the bid level with the buffer only
+        neckline_val + half_pip
     } else {
-        // For M patterns (short positions)
-        // Our stoploss input is the bid price, but if it
-        // gets hit, it'll be the ask price that hits it
-        // so we need to add the borker spread
-        (
-            neckline_val - (spread_pips + half_pip),
-            stop_loss + (sl_buffer + spread_pips),
-        )
+        // Short entries sell at the bid, buffering just below the neckline
+        neckline_val - half_pip
     };
-    // Take profit is 1:1
-    let tp = if is_w {
-        entry + (entry - sl)
+
+    let sl = if is_w {
+        // Long stop loss sits below the wick by the spread plus an extra pip safety
+        stop_loss - (spread_pips + one_pip)
     } else {
-        entry - (sl - entry)
+        // Short stop loss sits above the wick by the spread plus one pip
+        stop_loss + (spread_pips + one_pip)
+    };
+
+    let risk = if is_w {
+        neckline_val - sl
+    } else {
+        sl - neckline_val
+    };
+
+    let tp = if is_w {
+        // Move 1R above the neckline and remove the buffer on the way out
+        neckline_val + risk - half_pip
+    } else {
+        // For shorts, project 1R below the neckline and add the buffer back
+        neckline_val - risk + half_pip
     };
 
     // Calculate distances in pips
