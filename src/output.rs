@@ -35,22 +35,23 @@ pub fn OutputWithValues(
     let pip_size = 10.0_f64.powi(-(*pip_places.read() as i32));
     let is_w = neckline_val > high_low_val;
     let stop_loss = high_low_val;
+    let spread_pips = *spread.read() * pip_size;
+    let half_pip = 0.5 * pip_size;
+    let sl_buffer = pip_size;
+
     let (entry, sl) = if is_w {
         // For W patterns (long position)
         // Our inputs are bid prices, and we will be buying at the
         // ask price, so we need to add the broker spread
-        (
-            neckline_val + (0.5 + *spread.read()) * pip_size,
-            stop_loss - 1.0 * pip_size,
-        )
+        (neckline_val + spread_pips + half_pip, stop_loss - sl_buffer)
     } else {
         // For M patterns (short positions)
         // Our stoploss input is the bid price, but if it
         // gets hit, it'll be the ask price that hits it
         // so we need to add the borker spread
         (
-            neckline_val - 0.5 * pip_size,
-            stop_loss + (1.0 + *spread.read()) * pip_size,
+            neckline_val - (spread_pips + half_pip),
+            stop_loss + (sl_buffer + spread_pips),
         )
     };
     // Take profit is 1:1
