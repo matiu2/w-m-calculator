@@ -8,12 +8,10 @@ pub fn Output(
     spread: Signal<f64>,
 ) -> Element {
     if let (Some(high_low_val), Some(neckline_val)) = (*high_low.read(), *neckline.read()) {
-        let high_low = use_signal(|| high_low_val);
-        let neckline = use_signal(|| neckline_val);
         rsx! {
             OutputWithValues {
-                high_low: high_low,
-                neckline: neckline,
+                high_low: high_low_val,
+                neckline: neckline_val,
                 pip_places: pip_places,
                 spread: spread,
             }
@@ -25,15 +23,15 @@ pub fn Output(
 
 #[component]
 pub fn OutputWithValues(
-    high_low: Signal<f64>,
-    neckline: Signal<f64>,
+    high_low: f64,
+    neckline: f64,
     pip_places: Signal<usize>,
     spread: Signal<f64>,
 ) -> Element {
     let mut copy_alert = use_signal(|| Option::<String>::None);
 
-    let neckline_val = *neckline.read();
-    let high_low_val = *high_low.read();
+    let neckline_val = neckline;
+    let high_low_val = high_low;
     let pip_size = 10.0_f64.powi(-(*pip_places.read() as i32));
     let is_w = neckline_val > high_low_val;
     let stop_loss = high_low_val;
