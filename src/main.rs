@@ -44,70 +44,86 @@ pub fn Hero() -> Element {
     rsx! {
         div {
             id: "hero",
-            label {
-                for: "spread",
-                "Broker spread"
-            }
-            input {
-                id: "spread",
-                type: "number",
-                value: spread,
-                onchange: move |e: Event<FormData>| {
-                    let raw = e.value();
-                    let value = raw.trim().parse().unwrap_or(1.5);
-                    spread.set(value);
+            class: "calculator-card",
+            div {
+                class: "field",
+                label {
+                    for: "spread",
+                    "Broker spread"
+                }
+                input {
+                    id: "spread",
+                    type: "number",
+                    value: spread,
+                    onchange: move |e: Event<FormData>| {
+                        let raw = e.value();
+                        let value = raw.trim().parse().unwrap_or(1.5);
+                        spread.set(value);
+                    }
                 }
             }
-            label {
-                for: "pip_places",
-                "Pip decimal places"
-            }
-            input {
-                id: "pip_places",
-                type: "number",
-                step: "1",
-                min: "0",
-                max: "10",
-                value: pip_places,
-                onchange: move |e: Event<FormData>| {
-                    let raw = e.value();
-                    let value = raw.trim().parse().unwrap_or(4);
-                    pip_places.set(value);
+            div {
+                class: "field",
+                label {
+                    for: "pip_places",
+                    "Pip decimal places"
+                }
+                input {
+                    id: "pip_places",
+                    type: "number",
+                    step: "1",
+                    min: "0",
+                    max: "10",
+                    value: pip_places,
+                    onchange: move |e: Event<FormData>| {
+                        let raw = e.value();
+                        let value = raw.trim().parse().unwrap_or(4);
+                        pip_places.set(value);
+                    }
                 }
             }
-            label {
-                for: "high_low",
-                "Enter the M top level, or W low level"
+            div {
+                class: "field",
+                label {
+                    for: "high_low",
+                    "Enter the M top level, or W low level"
+                }
+                input {
+                    id: "high_low",
+                    type: "number",
+                    step: "any",
+                    value: {
+                        let decimal_places = *pip_places.read() + 1;
+                        high_low.read().as_ref().map(|v| format!("{v:.decimal_places$}")).unwrap_or_default()
+                    },
+                    onchange: get_input(high_low)
+                }
             }
-            input {
-                id: "high_low",
-                type: "number",
-                step: "any",
-                value: {
-                    let decimal_places = *pip_places.read() + 1;
-                    high_low.read().as_ref().map(|v| format!("{v:.decimal_places$}")).unwrap_or_default()
-                },
-                onchange: get_input(high_low)
+            div {
+                class: "field",
+                label {
+                    for: "neckline",
+                    "Enter the neckline level"
+                }
+                input {
+                    id: "neckline",
+                    type: "number",
+                    step: "any",
+                    value: {
+                        let decimal_places = *pip_places.read() + 1;
+                        neckline.read().as_ref().map(|v| format!("{v:.decimal_places$}")).unwrap_or_default()
+                    },
+                    onchange: get_input(neckline)
+                }
             }
-            label {
-                for: "neckline",
-                "Enter the neckline level"
-            }
-            input {
-                id: "neckline",
-                type: "number",
-                step: "any",
-                value: {
-                    let decimal_places = *pip_places.read() + 1;
-                    neckline.read().as_ref().map(|v| format!("{v:.decimal_places$}")).unwrap_or_default()
-                },
-                onchange: get_input(neckline)
-            }
-            Output {
-                high_low: high_low,
-                neckline: neckline,
-                pip_places: pip_places,
-                spread: spread,
+            div {
+                class: "results",
+                Output {
+                    high_low: high_low,
+                    neckline: neckline,
+                    pip_places: pip_places,
+                    spread: spread,
+                }
             }
         }
     }
