@@ -45,11 +45,11 @@ pub fn OutputWithValues(
     let one_pip = pip_size;
 
     // Price level adjustments (bid inputs, ask executions):
-    //  | Level       | W Bottom (Long)           | M Top (Short)              |
-    //  |-------------|---------------------------|----------------------------|
-    //  | Entry       | Neckline + 0.5 pip        | Neckline - 0.5 pip         |
-    //  | Stop Loss   | Wick low - (spread + 1.0) | Wick high + (spread + 1.0) |
-    //  | Take Profit | Neckline + 1R - buffer    | Neckline - 1R + buffer     |
+    //  | Level       | W Bottom (Long)                  | M Top (Short)                    |
+    //  |-------------|----------------------------------|----------------------------------|
+    //  | Entry       | Neckline + 0.5 pip               | Neckline - 0.5 pip               |
+    //  | Stop Loss   | Wick low - (spread + 1.0)        | Wick high + (spread + 1.0)       |
+    //  | Take Profit | Neckline + 1R - (spread + 0.5)   | Neckline - 1R + (spread + 0.5)   |
     let entry = if is_w {
         // Long entries buy through the ask; display the bid level with the buffer only
         neckline_val + half_pip
@@ -74,10 +74,10 @@ pub fn OutputWithValues(
 
     let tp = if is_w {
         // Move 1R above the neckline and remove the buffer on the way out
-        neckline_val + risk - half_pip
+        neckline_val + risk - (spread_pips + half_pip)
     } else {
         // For shorts, project 1R below the neckline and add the buffer back
-        neckline_val - risk + half_pip
+        neckline_val - risk + (spread_pips + half_pip)
     };
 
     // Calculate distances in pips
